@@ -8,9 +8,10 @@ export interface Doctor {
   lat?: number;
   lng?: number;
   bio?: string;
-  specialite?: Specialite; // un seul objet
+  specialite?: Specialite; 
   disponibilites?: { [date: string]: string[] }; 
   rating?: number; 
   distance?: string; 
+  email?: string;  
 
 }
