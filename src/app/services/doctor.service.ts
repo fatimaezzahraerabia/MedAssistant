@@ -1,23 +1,60 @@
 import { Injectable } from '@angular/core';
-import { Doctor } from '../models/doctor'; // Import the Doctor interface
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root' // Provides the service at the root level
-})
+export interface MedecinRequest {
+  id?: number;
+  nom: string;
+  prenom: string;
+  email?: string;  // si tu as l'email dans le backend
+  motDePasse?: string;
+  adresseCabinet?: string;
+  lat?: number;
+  lng?: number;
+  bio?: string;
+  specialite?: {
+    id: number;
+    nom: string;
+  };
+}
+
+
+export interface Specialite {
+  id: number;
+  nom: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class DoctorService {
+  private readonly baseUrl = 'http://localhost:8081/api';
 
-  private doctors: Doctor[] = [
-    { name: 'Dr. A.', rating: 4, distance: '2,5 km', specialty: 'Généraliste' },
-    { name: 'Dr. B.', rating: 5, distance: '0,8 km', specialty: 'Pédiatre' },
-    { name: 'Dr. C.', rating: 3, distance: '1,2 km', specialty: 'Dentiste' },
-    { name: 'Dr. D.', rating: 4, distance: '3,1 km', specialty: 'Dermatologue' },
-    { name: 'Dr. E.', rating: 5, distance: '5,0 km', specialty: 'Généraliste' },
-    { name: 'Dr. F.', rating: 4, distance: '1,5 km', specialty: 'Cardiologue' },
-  ];
+  constructor(private http: HttpClient) {}
 
-  constructor() { }
+  createMedecin(payload: MedecinRequest): Observable<MedecinRequest> {
+    return this.http.post<MedecinRequest>(`${this.baseUrl}/medecins`, payload);
+  }
 
-  getDoctors(): Doctor[] {
-    return this.doctors;
+  listSpecialites(): Observable<Specialite[]> {
+    return this.http.get<Specialite[]>(`${this.baseUrl}/specialites`);
+  }
+
+  getDoctors(): Observable<MedecinRequest[]> {
+    return this.http.get<MedecinRequest[]>(`${this.baseUrl}/medecins`);
+  }
+
+  getDoctorName(doctor: MedecinRequest): string {
+    return doctor.nom + ' ' + doctor.prenom;
+  }
+  
+  getDoctorSpecialty(doctor: MedecinRequest): string {
+    return doctor.specialite?.nom || '';
+  }
+  
+  getDoctorAddress(doctor: MedecinRequest): string {
+    return doctor.adresseCabinet || '';
+  }
+  
+  deleteDoctor(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/medecins/${id}`);
   }
 }
