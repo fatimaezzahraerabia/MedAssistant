@@ -45,7 +45,7 @@
     </div>
 
     <!-- Chat Section -->
-    <div *ngIf="activeSection === 'chat'" class="flex flex-col flex-grow">
+    <div *ngIf="activeSection === 'chat'" class="flex flex-col flex-grow overflow-hidden">
       <div #chatHistory id="chat-history" class="flex-grow p-4 space-y-4 overflow-y-auto">
         <ng-container *ngIf="chatMessages$ | async as messages">
           <div *ngFor="let message of messages" class="flex mb-2" [ngClass]="message.sender === 'user' ? 'justify-end' : 'justify-start'">
@@ -78,7 +78,7 @@
       </div>
       <!-- Chat input form -->
       <div class="p-4 bg-white rounded-b-xl border-t border-gray-200">
-        <form id="chat-form" class="flex gap-2 items-center">
+        <form id="chat-form" class="flex gap-2 items-center" (submit)="handleChatSubmit($event)">
           <input
             #chatInput
             type="text"
