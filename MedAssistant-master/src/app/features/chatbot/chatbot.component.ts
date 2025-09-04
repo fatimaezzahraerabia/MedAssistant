@@ -120,7 +120,10 @@ export class ChatbotComponent implements AfterViewInit, OnDestroy {
       console.error('Close button not found in chatbot modal.'); // Debugging
     }
     if (chatForm) {
-      // L'événement de soumission est maintenant géré dans le template
+      this.renderer.listen(chatForm, 'submit', (event: Event) => {
+        this.handleChatSubmit(event);
+        return false;
+      });
     }
   }
 
